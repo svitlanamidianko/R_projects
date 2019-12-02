@@ -1,10 +1,7 @@
 #### November 23, 2019 
 #### By Svitlana Midianko 
-#### Keywords: genetic matching, propensity scores, balancing covariates, 
+#### Keywords: genetic matching, propensity scores, balancing covariates, UN intervention, peacebuilding
 #------------------------------------------------------------------------------------------------------------------------
-######
-# Q2 #
-######
 # replicating graph from G.King (2007) paper. The main claim is that 
 # that the marginal effects of the UN interventions are highly dependent on the modeling assumptions, 
 # rather than on empirical data
@@ -78,16 +75,14 @@ lines(1:315, new_y, lwd = 2, ylim = c(0, 0.8))
 legend(0, 0.1, legend=c("Modified model (including interaction terms)", "Original model (excluding interaction terms)"),
         lty=1:2, cex=1)
 #------------------------------------------------------------------------------------------------------------------------
-######
-# Q3 #
-######
+#assigning a binary variable separating treated and non-treated variables. 
+#The treatment is considered to be any type of UN intervention,
+#which is either PKO (traditional peacekeeping operations), enforcement, or observer (Doybe & Sambasis, 2000).
 Tr <- rep(0, length(foo$uncint))
 Tr[which(foo$uncint != "None")] <- 1
 #------------------------------------------------------------------------------------------------------------------------
-###### 
-# Q4 # 
-######
-# exploring treatment effect with different models. Tr defined in Q3. 
+#addressing the question of what is the causal impact of UN intervention on peacebuilding success 2 and 5 years after the war. 
+#The success implies the end of the war to the residual-level violence and uncontested sovereignty.  
 library(Matching)
 NAs <- is.na(foo$pbs5l) 
 foo <-cbind(foo, Tr)
@@ -238,3 +233,8 @@ mb.out_5y <- MatchBalance(Tr ~ geo+  euro+ lac+ mideast+ asia+
                             treaty+ develop+ exp+ decade+  wardur*wardur+
                             develop*develop+exp*exp+develop*exp +pscores[mask],
                           data=foo[mask,], match.out = matchout.gen_5y, nboots=1000)
+
+#CONCLUSION: The results suggest that the influence of UN intervention vanishes away with time. 
+#Given that the ultimate long-term goal of the UN is ‘the maintenance of international peace and security (United Nations, n.d.)’, 
+#I recommend reconsidering current peacebuilding operations, try absolutely new ones and repeat the analysis. 
+#Also, Genetic Matching is advised for future pre-processing of any observational data as it is shown to achieve the most optimal balance. 
